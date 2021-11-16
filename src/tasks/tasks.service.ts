@@ -25,6 +25,11 @@ export class TasksService {
         /* Another one which could be more useful. both can stay and work fine but no need */
         this.tasks = this.tasks.filter((task) => id !== task.id);
     }
+    updateTask(id : string, status: TaskStatus): Task{
+        const task = this.getTaskById(id);
+        task.status = status;
+        return task;
+    }
 
     createTask(createTaskDto: CreateTaskDto): Task {
         const { title, description } = createTaskDto;
