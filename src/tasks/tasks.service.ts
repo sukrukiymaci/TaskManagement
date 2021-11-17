@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { v4 as uuid } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -32,6 +32,11 @@ export class TasksService {
     }
 
     getTaskById(id: string): Task {
+        const found = this.tasks.find((task) => task.id === id);
+        
+        if(!found){
+            throw new NotFoundException(`Task with ID "${id}" not found`);
+        }
         return this.tasks.find((task) => task.id === id);
     }
 
@@ -42,8 +47,10 @@ export class TasksService {
         // let num = this.tasks.indexOf(calc);
         // this.tasks.splice(num,1);
 
-        /* Another one which could be more useful. both can stay and work fine but no need */
-        this.tasks = this.tasks.filter((task) => id !== task.id);
+        const found = this.getTaskById(id);
+        let num = this.tasks.indexOf(found);
+
+        this.tasks.splice(num,1);
     }
     updateTask(id: string, status: TaskStatus): Task {
         const task = this.getTaskById(id);
